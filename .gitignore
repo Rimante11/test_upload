@@ -1,4 +1,5 @@
-# .NET Core
+cd /Users/rimante_macbook/Documents/Code/imageUpload/image-upload-backend
+dotnet run# .NET Core
 bin/
 obj/
 *.user
@@ -18,6 +19,9 @@ artifacts/
 *.runtimeconfig.dev.json
 appsettings.Development.json
 *.log
+
+# HTTP test files
+*.http
 
 # Database files (SQLite)
 *.db
