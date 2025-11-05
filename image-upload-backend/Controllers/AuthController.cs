@@ -32,7 +32,7 @@ namespace ImageUploadApi.Controllers
                 var result = await _authService.LoginAsync(request);
                 if (result == null)
                 {
-                    return Unauthorized("Invalid credentials or tenant");
+                    return Unauthorized("Invalid credentials!");
                 }
 
                 return Ok(result);
