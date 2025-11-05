@@ -31,7 +31,7 @@ A full-stack multi-tenant image upload platform built with .NET Web API and Reac
 
 ```
 imageUpload/
-├── ImageUploadApi/           # Backend (.NET Web API)
+├── image-upload-backend/     # Backend (.NET Web API)
 │   ├── Controllers/          # API endpoints
 │   ├── Data/                 # Database context and migrations
 │   ├── Models/              # Entity models and DTOs
@@ -64,7 +64,7 @@ imageUpload/
 
 2. **Setup Backend**
    ```bash
-   cd ImageUploadApi
+   cd image-upload-backend
    dotnet restore
    dotnet build
    ```
@@ -81,7 +81,7 @@ You need to run both the backend and frontend simultaneously:
 
 #### Terminal 1 - Backend API
 ```bash
-cd ImageUploadApi
+cd image-upload-backend
 dotnet run
 # API will be available at http://localhost:5119
 ```
@@ -156,7 +156,7 @@ The application supports multiple tenants with complete data isolation:
 ### Database Migrations
 
 ```bash
-cd ImageUploadApi
+cd image-upload-backend
 dotnet ef migrations add MigrationName
 dotnet ef database update
 ```
