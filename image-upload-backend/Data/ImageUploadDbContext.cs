@@ -65,7 +65,6 @@ namespace ImageUploadApi.Data
                       .HasForeignKey(e => e.TenantId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Add a query filter to exclude deleted images by default
                 entity.HasQueryFilter(e => !e.IsDeleted);
             });
 

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using ImageUploadApi.Data;
 using ImageUploadApi.Models;
 using ImageUploadApi.Models.DTOs;
+using System.Data;
 
 namespace ImageUploadApi.Services
 {
@@ -41,19 +42,23 @@ namespace ImageUploadApi.Services
         {
             try
             {
-                // Get tenant first
+                // Gets tenant first
                 var tenant = await _tenantService.GetTenantBySubdomainAsync(request.TenantSubdomain);
+                // SQL: SELECT * FROM Tenants WHERE Subdomain = 'acme' AND IsActive = 1
+
                 if (tenant == null)
                 {
                     _logger.LogWarning("Login attempt with invalid tenant subdomain: {Subdomain}", request.TenantSubdomain);
                     return null;
                 }
 
-                // Find user in tenant
+                // Finds user in tenant
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == request.Email && 
-                                            u.TenantId == tenant.Id && 
+                    .FirstOrDefaultAsync(u => u.Email == request.Email &&
+                                            u.TenantId == tenant.Id &&
                                             u.IsActive);
+                // SQL: SELECT * FROM Users WHERE Email = 'john.doe@acme.com' AND TenantId = 1 AND IsActive = 1
+
 
                 if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
                 {
@@ -61,7 +66,7 @@ namespace ImageUploadApi.Services
                     return null;
                 }
 
-                // Generate JWT token
+                // Generates JWT token
                 var token = GenerateJwtToken(user, tenant);
 
                 _logger.LogInformation("Successful login for user {UserId} in tenant {TenantId}", user.Id, tenant.Id);
@@ -155,11 +160,14 @@ namespace ImageUploadApi.Services
                 new Claim("TenantSubdomain", tenant.Subdomain)
             };
 
+            // Token expires after 1 hour for better security
+            // For testing purposes, set it to 1 minute
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtIssuer,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(24),
+                // expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(1),
                 signingCredentials: credentials
             );
 

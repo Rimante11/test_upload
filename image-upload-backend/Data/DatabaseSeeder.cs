@@ -9,11 +9,11 @@ namespace ImageUploadApi.Data
     {
         public static async Task SeedDevelopmentDataAsync(ImageUploadDbContext context, IAuthService authService)
         {
-            // Check if data already exists
+            // Checks if data already exists
             if (await context.Tenants.AnyAsync())
                 return;
 
-            // Create sample tenants
+            // Creates sample tenants
             var tenant1 = new Tenant
             {
                 Name = "Acme Corporation",
@@ -33,7 +33,7 @@ namespace ImageUploadApi.Data
             context.Tenants.AddRange(tenant1, tenant2);
             await context.SaveChangesAsync();
 
-            // Create sample users
+            // Creates sample users 
             var user1 = new User
             {
                 Username = "john.doe",

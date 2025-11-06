@@ -13,7 +13,7 @@ namespace ImageUploadApi.Services
             // Use a uploads directory in the project root, or configure via appsettings
             _basePath = configuration["FileStorage:BasePath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "uploads");
             
-            // Ensure base directory exists
+            // Ensure base directory exists for uploaded images
             if (!Directory.Exists(_basePath))
             {
                 Directory.CreateDirectory(_basePath);
