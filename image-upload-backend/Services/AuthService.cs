@@ -167,7 +167,7 @@ namespace ImageUploadApi.Services
                 audience: jwtIssuer,
                 claims: claims,
                 // expires: DateTime.UtcNow.AddHours(1),
-                expires: DateTime.UtcNow.AddMinutes(1),
+                expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: credentials
             );
 
