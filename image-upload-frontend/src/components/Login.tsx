@@ -107,7 +107,7 @@ const Login: React.FC = () => {
   return (
     <Container>
       <LoginCard>
-        <Title>Image Upload Platform</Title>
+        <Title>Image Upload Service</Title>
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
