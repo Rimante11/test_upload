@@ -2,6 +2,57 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5119/api';
 
+// Token expiration tracking
+let tokenExpirationTimer: NodeJS.Timeout | null = null;
+
+// Function to decode JWT and check expiration
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = payload.exp * 1000; // Convert to milliseconds
+    return Date.now() >= expirationTime;
+  } catch {
+    return true;
+  }
+};
+
+// Function to get time until token expires (in milliseconds)
+const getTokenExpirationTime = (token: string): number | null => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = payload.exp * 1000; // Convert to milliseconds
+    return expirationTime - Date.now();
+  } catch {
+    return null;
+  }
+};
+
+// Function to clear session
+const clearSession = () => {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  if (tokenExpirationTimer) {
+    clearTimeout(tokenExpirationTimer);
+    tokenExpirationTimer = null;
+  }
+};
+
+// Function to set up auto-logout on token expiration
+const setupTokenExpiration = (token: string) => {
+  if (tokenExpirationTimer) {
+    clearTimeout(tokenExpirationTimer);
+  }
+
+  const timeUntilExpiration = getTokenExpirationTime(token);
+  if (timeUntilExpiration && timeUntilExpiration > 0) {
+    tokenExpirationTimer = setTimeout(() => {
+      alert('Your session has expired. Please log in again.');
+      clearSession();
+      window.location.href = '/login';
+    }, timeUntilExpiration);
+  }
+};
+
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
@@ -11,6 +62,12 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
     if (token) {
+      // Check if token is expired before making request
+      if (isTokenExpired(token)) {
+        clearSession();
+        window.location.href = '/login';
+        return Promise.reject(new Error('Token expired'));
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -25,8 +82,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      clearSession();
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -80,12 +136,24 @@ export interface ImageListResponse {
 export const authApi = {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await api.post('/auth/login', credentials);
-    return response.data;
+    const data = response.data;
+    
+    // Set up automatic logout when token expires
+    if (data.token) {
+      setupTokenExpiration(data.token);
+    }
+    
+    return data;
   },
 
   async getCurrentUser(): Promise<User> {
     const response = await api.get('/auth/me');
     return response.data;
+  },
+  
+  logout() {
+    clearSession();
+    window.location.href = '/login';
   },
 };
 
@@ -119,4 +187,5 @@ export const imageApi = {
   },
 };
 
+export { setupTokenExpiration, clearSession, isTokenExpired };
 export default api;

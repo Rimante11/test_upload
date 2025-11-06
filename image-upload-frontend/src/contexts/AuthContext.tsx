@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { authApi, LoginRequest, LoginResponse, User } from '../api';
+import { authApi, LoginRequest, LoginResponse, User, setupTokenExpiration, isTokenExpired, clearSession } from '../api';
 
 interface AuthContextType {
   user: User | null;
@@ -31,12 +31,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const initAuth = async () => {
       const token = localStorage.getItem('authToken');
       if (token) {
+        // Check if token is expired
+        if (isTokenExpired(token)) {
+          clearSession();
+          setLoading(false);
+          return;
+        }
+        
         try {
+          // Set up automatic logout timer
+          setupTokenExpiration(token);
+          
           const userData = await authApi.getCurrentUser();
           setUser(userData);
         } catch (error) {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
+          clearSession();
         }
       }
       setLoading(false);
@@ -66,8 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    clearSession();
     setUser(null);
   };
 
