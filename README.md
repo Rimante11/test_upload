@@ -4,12 +4,12 @@ A full-stack multi-tenant image upload platform built with .NET Web API and Reac
 
 ## Features
 
-- 🔐 **Multi-tenant Authentication** - JWT-based authentication with tenant isolation
-- 📤 **Image Upload** - Drag & drop interface with file validation
-- 🖼️ **Image Processing** - Automatic thumbnail generation and image optimization
-- 🗂️ **File Management** - Persistent file storage with metadata tracking
-- 🎨 **Modern UI** - Clean, responsive React interface with styled-components
-- 🔄 **Real-time Gallery** - View uploaded images with original and thumbnail versions
+- **Multi-tenant Authentication** - JWT-based authentication with tenant isolation
+- **Image Upload** - Drag & drop interface with file validation
+- **Image Processing** - Automatic thumbnail generation and image optimization
+- **File Management** - Persistent file storage with metadata tracking
+- **Modern UI** - Clean, responsive React interface with styled-components
+- **Real-time Gallery** - View uploaded images with original and thumbnail versions
 
 ## Architecture
 
@@ -26,25 +26,6 @@ A full-stack multi-tenant image upload platform built with .NET Web API and Reac
 - **File Upload**: react-dropzone
 - **HTTP Client**: axios
 - **Routing**: react-router-dom
-
-## Project Structure
-
-```
-imageUpload/
-├── image-upload-backend/     # Backend (.NET Web API)
-│   ├── Controllers/          # API endpoints
-│   ├── Data/                 # Database context and migrations
-│   ├── Models/              # Entity models and DTOs
-│   ├── Services/            # Business logic services
-│   └── uploads/             # File storage directory
-├── image-upload-frontend/    # Frontend (React TypeScript)
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── contexts/        # React contexts (Auth)
-│   │   └── api/             # API client
-│   └── public/              # Static assets
-└── README.md
-```
 
 ## Getting Started
 
@@ -115,28 +96,6 @@ npm start
 ### Health
 - `GET /health` - API health check
 
-## Configuration
-
-### Backend Configuration (`appsettings.json`)
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Data Source=ImageUpload.db"
-  },
-  "Jwt": {
-    "Key": "your-secret-key-here",
-    "Issuer": "ImageUploadApi"
-  },
-  "FileStorage": {
-    "BasePath": "uploads"
-  }
-}
-```
-
-### Environment Variables
-- `JWT_KEY`: JWT signing key (override default)
-- `JWT_ISSUER`: JWT issuer (override default)
-
 ## Multi-Tenant Architecture
 
 The application supports multiple tenants with complete data isolation:
@@ -146,22 +105,6 @@ The application supports multiple tenants with complete data isolation:
 - Database queries include tenant filtering
 - File storage is organized by tenant
 
-## Development
-
-### Adding New Features
-
-1. **Backend**: Add controllers in `Controllers/`, services in `Services/`, models in `Models/`
-2. **Frontend**: Add components in `src/components/`, update API client in `src/api/`
-
-### Database Migrations
-
-```bash
-cd image-upload-backend
-dotnet ef migrations add MigrationName
-dotnet ef database update
-```
-
-## Deployment
 
 ### Production Configuration
 
@@ -171,26 +114,11 @@ dotnet ef database update
 4. **Configure HTTPS**
 5. **Set up proper CORS policies**
 
-### Docker Support (Coming Soon)
-
-Docker configuration will be added for containerized deployment.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Tech Stack
 
 - **Backend**: .NET 9, ASP.NET Core, Entity Framework Core, SQLite, ImageSharp
 - **Frontend**: React, TypeScript, styled-components, react-dropzone
 - **Authentication**: JWT Bearer tokens
-- **Database**: SQLite (development), SQL Server (production ready)
+- **Database**: SQLite (development),
 - **Storage**: File System (development), Azure Blob Storage (production ready)
